@@ -1,0 +1,338 @@
+openapi: 3.0.0
+info:
+  description: web market
+  title: web market
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /user:
+    post:
+      summary: Create New User
+      operationId: post-user
+      responses:
+        '200':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                New User user1@gmail.com:
+                  value:
+                    id: 1
+                    email: user1@gmail.com
+                    emailVerified: false
+                    createDate: '2022-01-01'
+        '400':
+          description: Missing Required Information
+        '409':
+          description: Email Already Taken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+            examples:
+              Create User user1@gmail.com:
+                value:
+                  email: user1@gmail.com
+                  password: gw3232423fgggre233
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new user.
+  '/users/{userId}':
+    parameters:
+      - schema:
+          type: integer
+        name: userId
+        in: path
+        required: true
+        description: Id of an existing user.
+    get:
+      summary: Get User Info by User ID
+      tags: []
+      responses:
+        '200':
+          description: User Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples: {}
+        '404':
+          description: User Not Found
+      operationId: get-users-userId
+      description: Retrieve the information of the user with the matching user ID.
+    patch:
+      summary: Update User Information
+      operationId: patch-users-userId
+      responses:
+        '200':
+          description: User Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                Updated User user1@gmail.com:
+                  value:
+                    id: 1
+                    email: user1@gmail.com
+                    emailVerified: false
+                    createDate: '2022-01-01'
+        '404':
+          description: User Not Found
+        '409':
+          description: Email Already Taken
+      description: Update the information of an existing user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: >-
+                    If a new email is given, the user's email verified property
+                    will be set to false.
+                password:
+                  type: string
+                contactInfo:
+                  $ref: '#/components/schemas/Contact'
+            examples:
+              Update Email:
+                value:
+                  email: user2@gmail.com
+              Update Password:
+                value:
+                  password: string
+        description: Patch user properties to update.
+  '/users/{userId}/posting':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    post:
+      summary: Create new posting for user
+      operationId: post-users-userId-posting
+      responses:
+        '200':
+          description: New posting created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Posting'
+        '401':
+          description: Unauthorized
+      description: Create new posting for user with Id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPosting'
+  '/users/{userId}/postings/{postingId}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: postingId
+        in: path
+        required: true
+    get:
+      summary: Get posting from particular user
+      operationId: get-users-userId-postings-postingId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Posting'
+      description: Get posting from particular user with userId and postingId
+  '/users/{userId}/postings/{postingId}/image':
+    parameters:
+      - schema:
+          type: string
+        name: postingId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    post:
+      summary: Upload image for particular posting
+      operationId: post-users-userId-postings-postingId-image
+      responses:
+        '200':
+          description: New image uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+              examples:
+                example url:
+                  value:
+                    url: /postings/1/images/1.jpg
+        '404':
+          description: Posting Not Found
+        '406':
+          description: Maximum number of images exceed
+      description: Upload new image for user posting with postingId
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Content-Type
+          description: content type of binary data
+        - schema:
+            type: string
+          in: header
+          name: Content-Length
+          description: content length in bytes
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: object
+            examples:
+              example-1:
+                value: {}
+  /postings:
+    get:
+      summary: Get Posting with query params
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Posting'
+              examples: {}
+      operationId: get-postings
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: category
+        - schema:
+            type: string
+          in: query
+          name: location
+        - schema:
+            type: string
+          in: query
+          name: date
+    parameters: []
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: User model for registered users
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        email:
+          type: string
+          format: email
+          example: user1@gmail.com
+        emailVerified:
+          type: boolean
+          description: Set to true if the user's email has been verified.
+        createDate:
+          type: string
+          format: date
+          description: The date that the user was created.
+        contactInfo:
+          $ref: '#/components/schemas/Contact'
+    NewUser:
+      title: NewUser
+      type: object
+      description: User model for registered users
+      properties:
+        email:
+          type: string
+          format: email
+          example: user1@gmail.com
+        password:
+          type: string
+        contactInfo:
+          $ref: '#/components/schemas/Contact'
+      required:
+        - email
+        - password
+    Posting:
+      title: Posting
+      type: object
+      properties:
+        id:
+          type: integer
+        postingInfo:
+          $ref: '#/components/schemas/NewPosting'
+        contactInfo:
+          $ref: '#/components/schemas/Contact'
+        imageUrls:
+          type: array
+          items:
+            type: string
+    NewPosting:
+      title: NewPosting
+      type: object
+      description: ''
+      properties:
+        title:
+          type: string
+          example: c++ book
+        description:
+          type: string
+          example: good boog for programmers
+        category:
+          type: string
+          example: books
+        location:
+          type: string
+          example: Oulu
+        price:
+          type: integer
+          example: 10
+        deliveryType:
+          type: string
+          enum:
+            - shipping
+            - pickup
+          example: shipping
+      required:
+        - title
+        - description
+        - category
+        - location
+        - price
+        - deliveryType
+    Contact:
+      title: ContactInfo
+      type: object
+      description: ''
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+  responses: {}
