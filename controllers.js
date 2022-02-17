@@ -14,10 +14,21 @@ const getIndex = (req, res) => {
 }
 
 const getUser = (req, res) => {
-    response(new user_schema.User(), req.params.userId, res);
+    user = handler.find_user(req.params.userId);
+    if (user != null) {
+        res.status(200).send(user);
+    } else {
+        res.status(404).send("user not found");
+    }
 }
 
 const getPosting = (req, res) => {
+    let obj = new posting_schema.Posting();
+    obj.imageURLs = [`/postings/${req.params.postingId}/images/1.jpg`]
+    response(obj, req.params.postingId, res);
+}
+
+const getUserPosting = (req, res) => {
     let obj = new posting_schema.Posting();
     obj.imageURLs = [`/postings/${req.params.postingId}/images/1.jpg`]
     response(obj, req.params.postingId, res);
@@ -28,21 +39,20 @@ const getPostingImage = (req, res) => {
     res.send("No Content Yet")
 }
 
-const getUserPosting = (req, res) => {
-    let obj = new posting_schema.Posting();
-    obj.imageURLs = [`/postings/${req.params.postingId}/images/1.jpg`]
-    response(obj, req.params.postingId, res);
-}
-
 const postUser = (req, res) => {
     user = new user_schema.User(req.body);
-    handler.save_user(user)
-    res.status(503);
-    res.send("No Content Yet")
+    id = handler.save_user(user)
+    res.status(200).send({_id: id})
 }
 
 const postUserPosting = (req, res) => {
-    validate(new_posting_validator, req, res);
+    if (handler.find_user(req.params.userId) == null) {
+        res.status(404).send("user not found");
+    } else {
+        posting = new posting_schema.Posting(req.body);
+        id = handler.save_posting(posting, req.params.userId);
+        res.status(200).send({_id: id});
+    }
 }
 
 const postUserPostingImage = (req, res) => {
@@ -51,8 +61,12 @@ const postUserPostingImage = (req, res) => {
 }
 
 const patchUser = (req, res) => {
-    res.status(503);
-    res.send("No Content Yet")
+    user = handler.patch_user(req.params.userId, req.body)
+    if (user != null) {
+        res.status(200).send(user);
+    } else {
+        res.status(404).send("user not found");
+    }
 }
 
 const patchUserPosting = (req, res) => {

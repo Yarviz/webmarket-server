@@ -26,7 +26,6 @@ const PostingSchema = new mongoose.Schema({
     },
     contactInfo: {
         type: ContactSchema,
-        _id: false,
         default: {
             name: "Erkki",
             email: "erkki2@email.com",
