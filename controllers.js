@@ -2,7 +2,7 @@ const user_schema = require('./models/user');
 const posting_schema = require('./models/posting');
 const { DataHandler } = require('./handlers');
 
-handler = new DataHandler();
+const handler = new DataHandler();
 
 const response = (obj, id, res) => {
     obj._id = id;
@@ -14,7 +14,7 @@ const getIndex = (req, res) => {
 }
 
 const getUser = (req, res) => {
-    user = handler.find_user(req.params.userId);
+    let user = handler.find_user(req.params.userId);
     if (user != null) {
         res.status(200).send(user);
     } else {
@@ -23,15 +23,21 @@ const getUser = (req, res) => {
 }
 
 const getPosting = (req, res) => {
-    let obj = new posting_schema.Posting();
-    obj.imageURLs = [`/postings/${req.params.postingId}/images/1.jpg`]
-    response(obj, req.params.postingId, res);
+    let postings = handler.find_postings(null, req.params.userId, req.params.category, req.params.location);
+    if (postings.length > 0) {
+        res.status(200).send(posting);
+    } else {
+        res.status(404).send("postings not found");
+    }
 }
 
 const getUserPosting = (req, res) => {
-    let obj = new posting_schema.Posting();
-    obj.imageURLs = [`/postings/${req.params.postingId}/images/1.jpg`]
-    response(obj, req.params.postingId, res);
+    let postings = handler.find_postings(req.params.postingId, req.params.userId, null, null);
+    if (postings.length > 0) {
+        res.status(200).send(postings);
+    } else {
+        res.status(404).send("postings not found");
+    }
 }
 
 const getPostingImage = (req, res) => {
@@ -40,8 +46,8 @@ const getPostingImage = (req, res) => {
 }
 
 const postUser = (req, res) => {
-    user = new user_schema.User(req.body);
-    id = handler.save_user(user)
+    let user = new user_schema.User(req.body);
+    let id = handler.save_user(user)
     res.status(200).send({_id: id})
 }
 
@@ -61,7 +67,7 @@ const postUserPostingImage = (req, res) => {
 }
 
 const patchUser = (req, res) => {
-    user = handler.patch_user(req.params.userId, req.body)
+    let user = handler.patch_user(req.params.userId, req.body)
     if (user != null) {
         res.status(200).send(user);
     } else {
@@ -70,13 +76,25 @@ const patchUser = (req, res) => {
 }
 
 const patchUserPosting = (req, res) => {
-    res.status(503);
-    res.send("No Content Yet")
+    let user = handler.find_user(req.params.userId);
+    if (user != null) {
+        let posting = handler.patch_posting(req.params.postingId)
+        if (posting != null) {
+            res.status(200).send(posting);
+        } else {
+            res.status(404).send("posting not found");
+        }
+    } else {
+        res.status(404).send("user not found");
+    }
 }
 
 const deleteUserPosting = (req, res) => {
-    res.status(200);
-    res.send(`Posting ${req.params.postingId} Deleted`)
+    if (handler.delete_posting(req.params.postingId, req.params.userId)) {
+        res.status(200).send("posting deleted");
+    } else {
+        res.status(404).send("posting not found")
+    }
 }
 
 module.exports = {

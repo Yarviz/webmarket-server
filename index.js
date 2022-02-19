@@ -15,7 +15,7 @@ app.use(bodyparser.json());
 
 app.get('/', routes.getIndex);
 app.get('/users/:userId', routes.getUser);
-app.get('/users/:userId/postings/:postingId', routes.getUserPosting);
+app.get('/users/:userId/postings', routes.getUserPosting);
 app.get('/postings', routes.getPosting);
 app.get('/postings/:postingId/images/:imageId', routes.getPostingImage);
 app.post('/user', validator.new_user_validator, routes.postUser);

@@ -24,9 +24,11 @@ const PostingSchema = new mongoose.Schema({
             deliveryType: "shipping"
         }
     },
+    user_id: Number,
     contactInfo: {
         type: ContactSchema,
         default: {
+            id_: false,
             name: "Erkki",
             email: "erkki2@email.com",
             phone: "1234567"
