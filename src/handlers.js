@@ -35,6 +35,14 @@ class DataHandler {
         posting.contactInfo = {};
     }
 
+    count_users() {
+        return this.#users.length;
+    }
+
+    count_postings() {
+        return this.#postings.length;
+    }
+
     save_user(user) {
         user._id = this.#user_index++;
         this.#users.push(user);
@@ -122,6 +130,25 @@ class DataHandler {
             return true;
         }
         return false;
+    }
+
+    delete_all_data() {
+        if (this.#users.length == 0) return false;
+        this.#postings.forEach((posting) => {
+            // delete posting images from filesystem
+            posting.images.forEach((image) => {
+                try {
+                    fs.unlinkSync("./public/" + image);
+                } catch(err) {
+                    console.log(err)
+                }
+            });
+        })
+        this.#postings = [];
+        this.#users = [];
+        this.#user_index = 0;
+        this.#posting_index = 0;
+        return true;
     }
 }
 

@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 
 const handler = new DataHandler();
 const MAX_IMAGES = 3;
+const MAX_USERS = 10;
+const MAX_POSTINGS = 100;
 const TOKEN_SECRET = "testTokenSecret";
 
 const prePostingImage = (req, res, next) => {
@@ -52,17 +54,23 @@ const loginUser = (req, res) => {
     if (user == null) {
         return res.status(401).send("invalid username or password");
     }
-    const token = jwt.sign({ userid: user._id }, TOKEN_SECRET);
+    const token = jwt.sign({ userId: user._id }, TOKEN_SECRET);
     res.status(200).json({accessToken: token});
 }
 
 const postUser = (req, res) => {
+    if (handler.count_users() >= MAX_USERS) {
+        return res.status(401).send("Maximun number of users created");
+    }
     const user = new user_schema.User(req.body);
     const id = handler.save_user(user);
     res.status(200).send({_id: id});
 }
 
 const postUserPosting = (req, res) => {
+    if (handler.count_postings() >= MAX_POSTINGS) {
+        return res.status(401).send("Maximun number of postings created");
+    }
     if (handler.find_user(req.params.userId) == null) {
         return res.status(404).send("user not found");
     }
@@ -108,6 +116,13 @@ const deleteUserPosting = (req, res) => {
     res.status(200).send("posting deleted");
 }
 
+const resetAllData = (req, res) => {
+    if (!handler.delete_all_data()) {
+        return res.status(401).send("no users or postings");
+    }
+    res.status(200).send("users and postings deleted");
+}
+
 module.exports = {
     getIndex,
     getUser,
@@ -121,5 +136,6 @@ module.exports = {
     patchUserPosting,
     deleteUserPosting,
     prePostingImage,
-    loginUser
+    loginUser,
+    resetAllData
 }
