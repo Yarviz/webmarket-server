@@ -22,6 +22,14 @@ class TestData {
         }
         return example_new_user;
     }
+
+    get_test_login(index) {
+        const example_login = {
+            email: test_users.emails[index],
+            password: test_users.passwords[index]
+        }
+        return example_login;
+    }
 }
 
 module.exports = {
