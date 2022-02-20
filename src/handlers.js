@@ -50,11 +50,12 @@ class DataHandler {
         return posting._id;
     }
 
-    find_user(id) {
+    find_user(id, email, password) {
         for(const user of this.#users) {
-            if (user._id == id) {
-                return user;
-            }
+            if (id != null && user._id != id) continue;
+            if (email != null && user.email != email) continue;
+            if (password != null && user.password != password) continue;
+            return user;
         }
         return null;
     }

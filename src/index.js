@@ -4,7 +4,8 @@ const routes = require('./routes');
 const validator = require('./validators');
 const morgan = require('morgan');
 const multer = require('multer');
-const { _ } = require('ajv');
+const { authenticateJWT } = require('./authenticator');
+//const jwt = require('jsonwebtoken');
 //const mongoose = require('mongoose');
 
 const fileFilter = (req, file, cb) => {
@@ -39,9 +40,10 @@ app.use(morgan('tiny'));
 
 app.get('/', routes.getIndex);
 app.get('/users/:userId', routes.getUser);
-app.get('/users/:userId/posting', routes.getUserPostings);
+app.get('/users/:userId/posting', authenticateJWT, routes.getUserPostings);
 app.get('/postings', routes.getPostings);
 app.get('/postings/:postingId/images/:imageId', routes.getPostingImage);
+app.post('/login', routes.loginUser);
 app.post('/user', validator.new_user_validator, routes.postUser);
 app.post('/users/:userId/posting', validator.new_posting_validator,routes.postUserPosting);
 app.post('/users/:userId/postings/:postingId/image', routes.prePostingImage, upload.single('PostingImage'), routes.postUserPostingImage);
