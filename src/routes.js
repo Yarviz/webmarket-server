@@ -1,3 +1,4 @@
+require('dotenv').config();
 const user_schema = require('./models/user');
 const posting_schema = require('./models/posting');
 const { DataHandler } = require('./handlers');
@@ -7,11 +8,9 @@ const handler = new DataHandler();
 const MAX_IMAGES = 3;
 const MAX_USERS = 10;
 const MAX_POSTINGS = 100;
-const TOKEN_SECRET = "testTokenSecret";
 
 const prePostingImage = (req, res, next) => {
     const postings = handler.find_postings(req.params.postingId, req.params.userId, null, null);
-    console.log(postings);
     if (!postings.length) {
         return res.status(404).send("posting not found");
     }
@@ -54,7 +53,7 @@ const loginUser = (req, res) => {
     if (user == null) {
         return res.status(401).send("invalid username or password");
     }
-    const token = jwt.sign({ userId: user._id }, TOKEN_SECRET);
+    const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET);
     res.status(200).json({accessToken: token});
 }
 
@@ -64,7 +63,7 @@ const postUser = (req, res) => {
     }
     const user = new user_schema.User(req.body);
     const id = handler.save_user(user);
-    res.status(200).send({_id: id});
+    res.status(200).json({_id: id});
 }
 
 const postUserPosting = (req, res) => {

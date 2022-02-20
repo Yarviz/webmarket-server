@@ -1,3 +1,4 @@
+require('dotenv').config();
 const fs = require('fs');
 
 const update_json = (js_a, js_b) => {
@@ -8,6 +9,11 @@ const update_json = (js_a, js_b) => {
             js_a[key] = js_b[key];
         }
     });
+}
+
+const log = (item) => {
+    if (process.env.NODE_ENV === "test") return;
+    console.log(item);
 }
 
 class DataHandler {
@@ -46,7 +52,7 @@ class DataHandler {
     save_user(user) {
         user._id = this.#user_index++;
         this.#users.push(user);
-        console.log(this.#users);
+        log(this.#users);
         return user._id;
     }
 
@@ -54,7 +60,7 @@ class DataHandler {
         posting._id = this.#posting_index++;
         posting.user_id = user_id;
         this.#postings.push(posting);
-        console.log(this.#postings);
+        log(this.#postings);
         return posting._id;
     }
 
@@ -70,7 +76,7 @@ class DataHandler {
 
     find_postings(id, user_id, category, location, create_date) {
         let result = [];
-        console.log(`find posting: id=${id} user_id=${user_id} category=${category} location=${location} createDate=${create_date}`)
+        log(`find posting: id=${id} user_id=${user_id} category=${category} location=${location} createDate=${create_date}`)
         for (const posting of this.#postings) {
             if (id != null && posting._id != id) continue;
             if (user_id != null && posting.user_id != user_id) continue;
@@ -134,8 +140,8 @@ class DataHandler {
 
     delete_all_data() {
         if (this.#users.length == 0) return false;
+        // first delete all posting images from filesystem
         this.#postings.forEach((posting) => {
-            // delete posting images from filesystem
             posting.images.forEach((image) => {
                 try {
                     fs.unlinkSync("./public/" + image);
@@ -144,6 +150,7 @@ class DataHandler {
                 }
             });
         })
+        // then clear postings and users and set indexes to zero
         this.#postings = [];
         this.#users = [];
         this.#user_index = 0;
@@ -153,5 +160,6 @@ class DataHandler {
 }
 
 module.exports = {
-    DataHandler
+    DataHandler,
+    log
 }
