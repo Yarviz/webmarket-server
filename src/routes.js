@@ -11,14 +11,12 @@ const prePostingImage = (req, res, next) => {
     const postings = handler.find_postings(req.params.postingId, req.params.userId, null, null);
     console.log(postings);
     if (!postings.length) {
-        res.status(404).send("posting not found");
-    } else {
-        if (postings[0].images.length === MAX_IMAGES) {
-            res.status(400).send("maximum number of images uploaded for posting");
-        } else {
-            next();
-        }
+        return res.status(404).send("posting not found");
     }
+    if (postings[0].images.length === MAX_IMAGES) {
+        return res.status(400).send("maximum number of images uploaded for posting");
+    }
+    next();
 }
 
 const getIndex = (req, res) => {
@@ -27,11 +25,10 @@ const getIndex = (req, res) => {
 
 const getUser = (req, res) => {
     const user = handler.find_user(req.params.userId, null, null);
-    if (user != null) {
-        res.status(200).send(user);
-    } else {
-        res.status(404).send("user not found");
+    if (user == null) {
+        return res.status(404).send("user not found");
     }
+    res.status(200).send(user);
 }
 
 const getPostings = (req, res) => {
@@ -52,12 +49,11 @@ const getPostingImage = (req, res) => {
 const loginUser = (req, res) => {
     const { email, password } = req.body;
     const user = handler.find_user(null, email, password);
-    if (user != null) {
-        const token = jwt.sign({ userid: user._id }, TOKEN_SECRET);
-        res.status(200).json({accessToken: token});
-    } else {
-        res.status(401).send("invalid username or password");
+    if (user == null) {
+        return res.status(401).send("invalid username or password");
     }
+    const token = jwt.sign({ userid: user._id }, TOKEN_SECRET);
+    res.status(200).json({accessToken: token});
 }
 
 const postUser = (req, res) => {
@@ -68,55 +64,48 @@ const postUser = (req, res) => {
 
 const postUserPosting = (req, res) => {
     if (handler.find_user(req.params.userId) == null) {
-        res.status(404).send("user not found");
-    } else {
-        const posting = new posting_schema.Posting({postingInfo:req.body});
-        const id = handler.save_posting(posting, req.params.userId);
-        res.status(200).json({_id: id});
+        return res.status(404).send("user not found");
     }
+    const posting = new posting_schema.Posting({postingInfo: req.body});
+    const id = handler.save_posting(posting, req.params.userId);
+    res.status(200).json({_id: id});
 }
 
 const postUserPostingImage = (req, res) => {
     if (!req.file) {
-        res.status(400).send("No image in request");
-    } else {
-        if (handler.upload_posting_image(req.params.postingId, req.file.filename)) {
-            res.status(200).json({filename: req.file.filename});
-        } else {
-            res.status(404).send("posting not found");
-        }
+        return res.status(400).send("No image in request");
     }
+    if (!handler.upload_posting_image(req.params.postingId, req.file.filename)) {
+        return res.status(404).send("posting not found");
+    }
+    res.status(200).json({filename: req.file.filename});
 }
 
 const patchUser = (req, res) => {
     const user = handler.patch_user(req.params.userId, req.body)
-    if (user != null) {
-        res.status(200).json(user);
-    } else {
-        res.status(404).send("user not found");
+    if (user == null) {
+        return res.status(404).send("user not found");
     }
+    res.status(200).json(user);
 }
 
 const patchUserPosting = (req, res) => {
     const user = handler.find_user(req.params.userId);
-    if (user != null) {
-        const posting = handler.patch_posting(req.params.postingId)
-        if (posting != null) {
-            res.status(200).json(posting);
-        } else {
-            res.status(404).send("posting not found");
-        }
-    } else {
-        res.status(404).send("user not found");
+    if (user == null) {
+        return res.status(404).send("user not found");
     }
+    const posting = handler.patch_posting(req.params.postingId)
+    if (posting == null) {
+        return res.status(404).send("posting not found");
+    }
+    res.status(200).json(posting);
 }
 
 const deleteUserPosting = (req, res) => {
-    if (handler.delete_posting(req.params.postingId, req.params.userId)) {
-        res.status(200).send("posting deleted");
-    } else {
-        res.status(404).send("posting not found")
+    if (!handler.delete_posting(req.params.postingId, req.params.userId)) {
+        return res.status(404).send("posting not found")
     }
+    res.status(200).send("posting deleted");
 }
 
 module.exports = {

@@ -6,11 +6,10 @@ const ajv = new Ajv();
 const validate = (validator) => {
     const cb_function = (req, res, next) => {
         console.log(`new request: ${JSON.stringify(req.body)}`);
-        if (validator(req.body)) {
-            next()
-        } else {
-            res.send(validator.errors[0].message)
+        if (!validator(req.body)) {
+            return res.send(validator.errors[0].message);
         }
+        next()
     }
     return cb_function;
 }
