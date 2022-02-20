@@ -12,6 +12,7 @@ const PostingInfoSchema = new mongoose.Schema({
 
 const PostingSchema = new mongoose.Schema({
     _id: Number,
+    createDate: { type: String, default: new Date(Date.now()).toISOString().slice(0,10) },
     postingInfo: {
         type: PostingInfoSchema,
         _id: false,
@@ -34,7 +35,7 @@ const PostingSchema = new mongoose.Schema({
             phone: "1234567"
         }
     },
-    imageURLs: [String]
+    images: [String]
 });
 
 const NewPostingProperties = {
