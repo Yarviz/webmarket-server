@@ -29,6 +29,7 @@ const getUser = (req, res) => {
     if (user == null) {
         return res.status(404).send("user not found");
     }
+    delete user.password;
     res.status(200).send(user);
 }
 
@@ -42,10 +43,10 @@ const getUserPostings = (req, res) => {
     res.status(200).send(postings);
 }
 
-const getPostingImage = (req, res) => {
+/*const getPostingImage = (req, res) => {
     res.status(503);
     res.send("No Content Yet")
-}
+}*/
 
 const loginUser = (req, res) => {
     const { email, password } = req.body;
@@ -89,10 +90,11 @@ const postUserPostingImage = (req, res) => {
 }
 
 const patchUser = (req, res) => {
-    const user = handler.patch_user(req.params.userId, req.body)
+    const user = handler.patch_user(req.params.userId, req.body);
     if (user == null) {
         return res.status(404).send("user not found");
     }
+    delete user.password;
     res.status(200).json(user);
 }
 
@@ -101,7 +103,7 @@ const patchUserPosting = (req, res) => {
     if (user == null) {
         return res.status(404).send("user not found");
     }
-    const posting = handler.patch_posting(req.params.postingId)
+    const posting = handler.patch_posting_info(req.params.postingId, req.body);
     if (posting == null) {
         return res.status(404).send("posting not found");
     }
@@ -126,7 +128,7 @@ module.exports = {
     getIndex,
     getUser,
     getPostings,
-    getPostingImage,
+    //getPostingImage,
     getUserPostings,
     postUser,
     postUserPosting,
