@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "heroku-postbuild" : "mkdir public"
   },
   "repository": {
     "type": "git",
