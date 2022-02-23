@@ -1,13 +1,23 @@
-const server = require('../src/server.js');
+require('dotenv').config();
 const supertest = require('supertest');
 const expect = require('chai').expect;
-const request = supertest(server);
 const test = require('./testdata.js');
 
 const tester = new test.TestData();
 const USER_ID = 0;
 const POSTING_ID = 0;
 var access_token = null;
+var image_file = null;
+var request;
+
+const args = process.argv.slice(2);
+if (args.length > 0 && args[0] === '-remote') {
+    request = supertest(process.env.APP_URL);
+    console.log(`Using remote server for tests, URL: ${process.env.APP_URL}`);
+} else {
+    const server = require('../src/server.js');
+    request = supertest(server);
+}
 
 describe('User Creating', () => {
     it('POST /user should create new users', async() => {
@@ -60,6 +70,23 @@ describe('User Accessing', () => {
             .send({ email: "veikko@mail.com" })
         expect(res.status).to.equal(200);
         expect(res.body.email).to.equal("veikko@mail.com");
+    });
+});
+
+describe('Image Upload/Download', () => {
+    it('POST /users/:userId/postings/:postingId/image should allow user to upload image for posting', async() => {
+        let res = await request.post(`/users/${USER_ID}/postings/${POSTING_ID}/image`)
+            .auth(access_token, {type: 'bearer'})
+            .field('Content-Type', 'multipart/form-data')
+            .attach('PostingImage', 'test/test.png')
+        expect(res.status).to.equal(200);
+        expect(res.body).to.have.property('filename');
+        image_file = res.body.filename;
+    });
+    it('GET /images should return image for correct filename', async() => {
+        let res = await request.get(`/images/${image_file}`)
+        expect(res.status).to.equal(200);
+        expect('Content-Type', 'image.png')
     });
 });
 

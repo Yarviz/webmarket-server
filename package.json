@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha",
+    "test-remote": "NODE_ENV=test mocha",
     "start": "node src/index.js",
     "heroku-postbuild" : "mkdir public"
   },
