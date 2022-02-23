@@ -35,7 +35,7 @@ if (process.env.NODE_ENV !== "test") {
     app.use(morgan('tiny'));
 }
 app.use(bodyparser.json());
-app.use('/images', express.static(__dirname + '/public'), (req, res) => {
+app.use('/images', express.static('./public'), (req, res) => {
     res.status(404).send("image not found");
 });
 
