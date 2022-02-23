@@ -1,3 +1,4 @@
+require('dotenv').config();
 const fs = require('fs');
 
 const update_json = (js_a, js_b) => {
@@ -8,6 +9,11 @@ const update_json = (js_a, js_b) => {
             js_a[key] = js_b[key];
         }
     });
+}
+
+const log = (item) => {
+    if (process.env.NODE_ENV === "test") return;
+    console.log(item);
 }
 
 class DataHandler {
@@ -25,7 +31,6 @@ class DataHandler {
 
     #fill_posting_contact(posting) {
         // fill posting contactInfo with current contactInfo of user who owns posting
-        console.log(posting);
         for (const user of this.#users) {
             if (user._id === posting.user_id) {
                 posting.contactInfo = user.contactInfo;
@@ -35,10 +40,18 @@ class DataHandler {
         posting.contactInfo = {};
     }
 
+    count_users() {
+        return this.#users.length;
+    }
+
+    count_postings() {
+        return this.#postings.length;
+    }
+
     save_user(user) {
         user._id = this.#user_index++;
         this.#users.push(user);
-        console.log(this.#users);
+        log(this.#users);
         return user._id;
     }
 
@@ -46,22 +59,23 @@ class DataHandler {
         posting._id = this.#posting_index++;
         posting.user_id = user_id;
         this.#postings.push(posting);
-        console.log(this.#postings);
+        log(this.#postings);
         return posting._id;
     }
 
-    find_user(id) {
+    find_user(id, email, password) {
         for(const user of this.#users) {
-            if (user._id == id) {
-                return user;
-            }
+            if (id != null && user._id != id) continue;
+            if (email != null && user.email != email) continue;
+            if (password != null && user.password != password) continue;
+            return {...user._doc};
         }
         return null;
     }
 
     find_postings(id, user_id, category, location, create_date) {
         let result = [];
-        console.log(`find posting: id=${id} user_id=${user_id} category=${category} location=${location} createDate=${create_date}`)
+        log(`find posting: id=${id} user_id=${user_id} category=${category} location=${location} createDate=${create_date}`)
         for (const posting of this.#postings) {
             if (id != null && posting._id != id) continue;
             if (user_id != null && posting.user_id != user_id) continue;
@@ -78,16 +92,16 @@ class DataHandler {
         for(const user of this.#users) {
             if (user._id == id) {
                 update_json(user, patch_data);
-                return user;
+                return {...user._doc};
             }
         }
         return null;
     }
 
-    patch_posting(id, patch_data) {
+    patch_posting_info(id, patch_data) {
         for(const posting of this.#postings) {
             if (posting._id == id) {
-                update_json(posting, patch_data);
+                update_json(posting.postingInfo, patch_data);
                 this.#fill_posting_contact(posting);
                 return posting;
             }
@@ -122,8 +136,29 @@ class DataHandler {
         }
         return false;
     }
+
+    delete_all_data() {
+        if (this.#users.length == 0) return false;
+        // first delete all posting images from filesystem
+        this.#postings.forEach((posting) => {
+            posting.images.forEach((image) => {
+                try {
+                    fs.unlinkSync("./public/" + image);
+                } catch(err) {
+                    console.log(err)
+                }
+            });
+        })
+        // then clear postings and users and set indexes to zero
+        this.#postings = [];
+        this.#users = [];
+        this.#user_index = 0;
+        this.#posting_index = 0;
+        return true;
+    }
 }
 
 module.exports = {
-    DataHandler
+    DataHandler,
+    log
 }

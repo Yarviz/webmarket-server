@@ -2,15 +2,15 @@ const Ajv = require('ajv');
 const user_schema = require('./models/user');
 const posting_schema = require('./models/posting');
 const ajv = new Ajv();
+const { log } = require('./handlers');
 
 const validate = (validator) => {
     const cb_function = (req, res, next) => {
-        console.log(`new request: ${JSON.stringify(req.body)}`);
-        if (validator(req.body)) {
-            next()
-        } else {
-            res.send(validator.errors[0].message)
+        log(`request body: ${JSON.stringify(req.body)}`);
+        if (!validator(req.body)) {
+            return res.status(401).send(validator.errors[0].message);
         }
+        next()
     }
     return cb_function;
 }
