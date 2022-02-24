@@ -54,7 +54,7 @@ const loginUser = (req, res) => {
     if (user == null) {
         return res.status(401).send("invalid username or password");
     }
-    const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET);
+    const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: process.env.TOKEN_EXPIRES });
     res.status(200).json({accessToken: token});
 }
 
@@ -119,7 +119,7 @@ const deleteUserPosting = (req, res) => {
 
 const resetAllData = (req, res) => {
     if (!handler.delete_all_data()) {
-        return res.status(401).send("no users or postings");
+        return res.status(403).send("no users or postings");
     }
     res.status(200).send("users and postings deleted");
 }

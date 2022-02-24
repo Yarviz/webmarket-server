@@ -11,7 +11,6 @@ const UserSchema = new mongoose.Schema({
     _id: Number,
     email: { type: String, default: "erkki@email.com" },
     password: { type: String },
-    emailVerified: { type: Boolean, default: true },
     createDate: { type: String, default: new Date(Date.now()).toISOString().slice(0,10) },
     contactInfo: {
         type: ContactSchema,

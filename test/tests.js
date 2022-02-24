@@ -118,3 +118,11 @@ describe('Public Accessing', () => {
         }
     });
 });
+
+describe('Resetting Data', () => {
+    it('DELETE /reset should delete all users, postings and posting images', async() => {
+        const res = await request.delete(`/reset`)
+        expect(res.status).to.equal(200);
+        expect(res.text).to.eql('users and postings deleted');
+    });
+})
