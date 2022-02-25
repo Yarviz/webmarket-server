@@ -47,8 +47,6 @@ app.get('/users/:userId/posting',
     authenticateJWT, routes.getUserPostings);
 app.get('/postings',
     routes.getPostings);
-//app.get('/postings/:postingId/images/:imageId',
-//    routes.getPostingImage);
 app.post('/login',
     routes.loginUser);
 app.post('/user',

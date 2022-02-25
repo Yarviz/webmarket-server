@@ -8,7 +8,7 @@ const validate = (validator) => {
     const cb_function = (req, res, next) => {
         log(`request body: ${JSON.stringify(req.body)}`);
         if (!validator(req.body)) {
-            return res.status(401).send(validator.errors[0].message);
+            return res.status(406).send(validator.errors[0].message);
         }
         next()
     }

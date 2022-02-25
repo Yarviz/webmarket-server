@@ -43,11 +43,6 @@ const getUserPostings = (req, res) => {
     res.status(200).send(postings);
 }
 
-/*const getPostingImage = (req, res) => {
-    res.status(503);
-    res.send("No Content Yet")
-}*/
-
 const loginUser = (req, res) => {
     const { email, password } = req.body;
     const user = handler.find_user(null, email, password);
@@ -134,7 +129,6 @@ module.exports = {
     getIndex,
     getUser,
     getPostings,
-    //getPostingImage,
     getUserPostings,
     postUser,
     postUserPosting,
