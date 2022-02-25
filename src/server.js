@@ -28,7 +28,11 @@ const storage = multer.diskStorage({
       cb(null, Date.now() + "_" + file.originalname)
     }
 })
-const upload = multer({ storage: storage, fileFilter: fileFilter });
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 512*512 }
+});
 const app = express();
 
 if (process.env.NODE_ENV !== "test") {

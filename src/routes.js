@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const handler = new DataHandler();
 const MAX_IMAGES = 3;
 const MAX_USERS = 10;
-const MAX_POSTINGS = 100;
+const MAX_POSTINGS = 20;
 
 const prePostingImage = (req, res, next) => {
     const postings = handler.find_postings(req.params.postingId, req.params.userId, null, null);
