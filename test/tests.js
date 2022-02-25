@@ -22,10 +22,12 @@ if (args.length > 0 && args[0] === '-remote') {
 describe('User Creating', () => {
     it('POST /user should create new users', async() => {
         for (i = 0; i < test.MAX_USERS; i++) {
+            const user = tester.get_new_test_user(i)
             const res = await request.post('/user')
-                .send(tester.get_new_test_user(i));
+                .send(user);
             expect(res.status).to.equal(200);
-            expect(res.body).to.eql({_id: i});
+            expect(res.body.contactInfo).to.eql(user.contactInfo);
+            expect(res.body._id).to.eql(i);
         }
     });
     it('POST /login should log in with correct email/password', async() => {
@@ -44,12 +46,17 @@ describe('User Accessing', () => {
         expect(res.status).to.equal(200);
     });
     it('POST /users/:userId/posting should allow logged user to create postings', async() => {
+        const user = tester.get_new_test_user(USER_ID);
         for (i = 0; i < test.MAX_POSTINGS; i++) {
+            const posting = tester.get_new_test_posting(i);
             const res = await request.post(`/users/${USER_ID}/posting`)
                 .auth(access_token, {type: 'bearer'})
-                .send(tester.get_new_test_posting(i))
+                .send(posting)
             expect(res.status).to.equal(200);
-            expect(res.body).to.eql({_id: i});
+            expect(res.body.postingInfo).to.eql(posting);
+            expect(res.body.contactInfo).to.eql(user.contactInfo);
+            expect(res.body.user_id).to.eql(USER_ID);
+            expect(res.body._id).to.eql(i);
         }
     });
     it('PATCH /users/:userId/postings/:postingId should allow user to update posting', async() => {

@@ -55,16 +55,22 @@ const loginUser = (req, res) => {
         return res.status(401).send("invalid username or password");
     }
     const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: process.env.TOKEN_EXPIRES });
-    res.status(200).json({accessToken: token});
+    delete user.password;
+    user.accessToken = token;
+    res.status(200).json(user);
 }
 
 const postUser = (req, res) => {
+    if (handler.find_user(null, req.body.email, null) != null) {
+        return res.status(409).send("email already taken");
+    }
     if (handler.count_users() >= MAX_USERS) {
         return res.status(401).send("Maximun number of users created");
     }
-    const user = new user_schema.User(req.body);
-    const id = handler.save_user(user);
-    res.status(200).json({_id: id});
+    const new_user = new user_schema.User(req.body);
+    const created_user = handler.save_user(new_user);
+    delete created_user.password;
+    res.status(200).json(created_user);
 }
 
 const postUserPosting = (req, res) => {
@@ -74,9 +80,9 @@ const postUserPosting = (req, res) => {
     if (handler.find_user(req.params.userId) == null) {
         return res.status(404).send("user not found");
     }
-    const posting = new posting_schema.Posting({postingInfo: req.body});
-    const id = handler.save_posting(posting, req.params.userId);
-    res.status(200).json({_id: id});
+    const new_posting = new posting_schema.Posting({postingInfo: req.body});
+    const created_posting = handler.save_posting(new_posting, req.params.userId);
+    res.status(200).json(created_posting);
 }
 
 const postUserPostingImage = (req, res) => {

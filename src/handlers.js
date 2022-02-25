@@ -51,16 +51,18 @@ class DataHandler {
     save_user(user) {
         user._id = this.#user_index++;
         this.#users.push(user);
-        log(this.#users);
-        return user._id;
+        //log(this.#users);
+        return {...this.#users[this.#users.length - 1]._doc};
     }
 
     save_posting(posting, user_id) {
         posting._id = this.#posting_index++;
         posting.user_id = user_id;
         this.#postings.push(posting);
-        log(this.#postings);
-        return posting._id;
+        //log(this.#postings);
+        const new_posting = {...this.#postings[this.#postings.length - 1]._doc}
+        this.#fill_posting_contact(new_posting);
+        return new_posting;
     }
 
     find_user(id, email, password) {
