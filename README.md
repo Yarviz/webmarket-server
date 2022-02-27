@@ -1,6 +1,6 @@
 # webmarket-server
 
-Webmarket-server is an example RESTful server for handling user requests in an online store.
+Webmarket-server is an example RESTful API for handling user requests in an online store.
 
 There is not integrated database, but created users, postings and images are saved temporarily in memory.
 ## Functionality

@@ -5,6 +5,7 @@ const routes = require('./routes');
 const validator = require('./validators');
 const morgan = require('morgan');
 const multer = require('multer');
+const fs = require('fs');
 const { authenticateJWT } = require('./authenticator');
 
 const fileFilter = (req, file, cb) => {
@@ -17,6 +18,10 @@ const fileFilter = (req, file, cb) => {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+    const path = './public';
+    if (!fs.existsSync(path)){
+        fs.mkdirSync(path);
+    }
       cb(null, './public')
     },
     filename: (req, file, cb) => {
