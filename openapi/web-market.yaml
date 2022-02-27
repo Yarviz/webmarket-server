@@ -155,7 +155,7 @@ paths:
                 type: string
               examples:
                 example-1:
-                  value: Missing Required Information
+                  value: must have required property 'email'
         '409':
           description: Email Already Taken
           content:
@@ -311,6 +311,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Posting'
+        '400':
+          description: Missing Required Information
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: must have required property 'location'
         '401':
           description: Unauthorized
           content:
