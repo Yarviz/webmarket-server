@@ -22,11 +22,11 @@ Need node.js and npm package manager.
 
 Need following enviromenet variables in .env file.
 
-    NODE_ENV
-    PORT
-    TOKEN_SECRET
-    TOKEN_EXPIRES
-    APP_URL (when running tests in remote server)
+    NODE_ENV e.g. "development"
+    PORT e.g. 3000
+    TOKEN_SECRET e.g. "secret_key"
+    TOKEN_EXPIRES e.g. "30m"
+    APP_URL e.g. https//myapp.com (when running tests in remote server)
 
 ## Tests
 
