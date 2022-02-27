@@ -18,7 +18,7 @@ const validate = (validator) => {
                 err_str += ": ";
             }
             err_str += error.message;
-            return res.status(406).send(err_str);
+            return res.status(400).send(err_str);
         }
         next()
     }

@@ -167,13 +167,22 @@ describe('Sending invalid parameters', () => {
         expect(res.status).to.equal(404);
         expect(res.text).to.eql('posting not found');
     });
+    it('POST /user should not create new users with invalid params', async() => {
+        const user = tester.get_new_test_user(1);
+        user.email = "not_email";
+        const res = await request.post('/user')
+            .send(user);
+        expect(res.status).to.equal(400);
+        expect(res.text).to.eql('email: must match format "email"');
+    });
     it('POST /users/:userId/posting should allow user to create postings with invalid params', async() => {
-        const posting = tester.get_new_test_posting(i);
+        const posting = tester.get_new_test_posting(0);
         delete posting.location;
         const res = await request.post(`/users/${USER_ID}/posting`)
             .auth(access_token, {type: 'bearer'})
             .send(posting)
-        expect(res.status).to.equal(406);
+        expect(res.status).to.equal(400);
+        expect(res.text).to.eql("must have required property 'location'");
     });
     it('DELETE /users/:userId/postings/:postingId should not allow user to delete other user posting', async() => {
         let res = await request.delete(`/users/${OTHER_USER_ID}/postings/${POSTING_ID}`)
