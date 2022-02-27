@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test mocha",
     "test-remote": "NODE_ENV=test mocha",
     "start": "node src/index.js",
-    "heroku-postbuild" : "mkdir public"
+    "heroku-postbuild": "mkdir public"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   "homepage": "https://github.com/Yarviz/webmarket-server#readme",
   "dependencies": {
     "ajv": "^8.10.0",
+    "ajv-formats": "^2.1.1",
     "body-parser": "^1.19.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",

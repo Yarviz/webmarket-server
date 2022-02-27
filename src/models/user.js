@@ -9,29 +9,24 @@ const ContactSchema = new mongoose.Schema({
 
 const UserSchema = new mongoose.Schema({
     _id: Number,
-    email: { type: String, default: "erkki@email.com" },
+    email: { type: String },
     password: { type: String },
     createDate: { type: String, default: new Date(Date.now()).toISOString().slice(0,10) },
     contactInfo: {
         type: ContactSchema,
         _id: false,
-        default: {
-            name: "Erkki",
-            email: "erkki2@email.com",
-            phone: "1234567"
-        }
     }
 });
 
 const NewUserProperties = {
-    email: { type: "string" },
+    email: { type: "string", format: "email" },
     password: { type: "string" },
     contactInfo: {
         type: "object",
         properties: {
             name: { type: "string" },
-            email: { type: "string" },
-            phone: { type: "string" }
+            email: { type: "string", format: "email" },
+            phone: { type: "string", pattern: "^[0-9]+$", }
         }
     }
 }
