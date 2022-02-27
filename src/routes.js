@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const handler = new DataHandler();
 const MAX_IMAGES = 3;
 const MAX_USERS = 10;
-const MAX_POSTINGS = 100;
+const MAX_POSTINGS = 20;
 
 const prePostingImage = (req, res, next) => {
     const postings = handler.find_postings(req.params.postingId, req.params.userId, null, null);
@@ -43,28 +43,29 @@ const getUserPostings = (req, res) => {
     res.status(200).send(postings);
 }
 
-/*const getPostingImage = (req, res) => {
-    res.status(503);
-    res.send("No Content Yet")
-}*/
-
 const loginUser = (req, res) => {
     const { email, password } = req.body;
     const user = handler.find_user(null, email, password);
     if (user == null) {
         return res.status(401).send("invalid username or password");
     }
-    const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET);
-    res.status(200).json({accessToken: token});
+    const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: process.env.TOKEN_EXPIRES });
+    delete user.password;
+    user.accessToken = token;
+    res.status(200).json(user);
 }
 
 const postUser = (req, res) => {
+    if (handler.find_user(null, req.body.email, null) != null) {
+        return res.status(409).send("email already taken");
+    }
     if (handler.count_users() >= MAX_USERS) {
         return res.status(401).send("Maximun number of users created");
     }
-    const user = new user_schema.User(req.body);
-    const id = handler.save_user(user);
-    res.status(200).json({_id: id});
+    const new_user = new user_schema.User(req.body);
+    const created_user = handler.save_user(new_user);
+    delete created_user.password;
+    res.status(200).json(created_user);
 }
 
 const postUserPosting = (req, res) => {
@@ -74,9 +75,9 @@ const postUserPosting = (req, res) => {
     if (handler.find_user(req.params.userId) == null) {
         return res.status(404).send("user not found");
     }
-    const posting = new posting_schema.Posting({postingInfo: req.body});
-    const id = handler.save_posting(posting, req.params.userId);
-    res.status(200).json({_id: id});
+    const new_posting = new posting_schema.Posting({postingInfo: req.body});
+    const created_posting = handler.save_posting(new_posting, req.params.userId);
+    res.status(200).json(created_posting);
 }
 
 const postUserPostingImage = (req, res) => {
@@ -119,7 +120,7 @@ const deleteUserPosting = (req, res) => {
 
 const resetAllData = (req, res) => {
     if (!handler.delete_all_data()) {
-        return res.status(401).send("no users or postings");
+        return res.status(403).send("no users or postings");
     }
     res.status(200).send("users and postings deleted");
 }
@@ -128,7 +129,6 @@ module.exports = {
     getIndex,
     getUser,
     getPostings,
-    //getPostingImage,
     getUserPostings,
     postUser,
     postUserPosting,

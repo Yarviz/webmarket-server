@@ -9,7 +9,7 @@ const authenticateJWT = (req, res, next) => {
     const token = authHeader.split(' ')[1];
     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
         if (err || user.userId != req.params.userId) {
-            return res.status(403).send("Unauthorized");
+            return res.status(401).send("Unauthorized");
         }
         req.user = user;
         next();

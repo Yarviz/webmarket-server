@@ -5,6 +5,7 @@ const test = require('./testdata.js');
 
 const tester = new test.TestData();
 const USER_ID = 0;
+const OTHER_USER_ID = 1;
 const POSTING_ID = 0;
 var access_token = null;
 var image_file = null;
@@ -22,10 +23,12 @@ if (args.length > 0 && args[0] === '-remote') {
 describe('User Creating', () => {
     it('POST /user should create new users', async() => {
         for (i = 0; i < test.MAX_USERS; i++) {
+            const user = tester.get_new_test_user(i)
             const res = await request.post('/user')
-                .send(tester.get_new_test_user(i));
+                .send(user);
             expect(res.status).to.equal(200);
-            expect(res.body).to.eql({_id: i});
+            expect(res.body.contactInfo).to.eql(user.contactInfo);
+            expect(res.body._id).to.eql(i);
         }
     });
     it('POST /login should log in with correct email/password', async() => {
@@ -44,12 +47,17 @@ describe('User Accessing', () => {
         expect(res.status).to.equal(200);
     });
     it('POST /users/:userId/posting should allow logged user to create postings', async() => {
+        const user = tester.get_new_test_user(USER_ID);
         for (i = 0; i < test.MAX_POSTINGS; i++) {
+            const posting = tester.get_new_test_posting(i);
             const res = await request.post(`/users/${USER_ID}/posting`)
                 .auth(access_token, {type: 'bearer'})
-                .send(tester.get_new_test_posting(i))
+                .send(posting)
             expect(res.status).to.equal(200);
-            expect(res.body).to.eql({_id: i});
+            expect(res.body.postingInfo).to.eql(posting);
+            expect(res.body.contactInfo).to.eql(user.contactInfo);
+            expect(res.body.user_id).to.eql(USER_ID);
+            expect(res.body._id).to.eql(i);
         }
     });
     it('PATCH /users/:userId/postings/:postingId should allow user to update posting', async() => {
@@ -116,5 +124,84 @@ describe('Public Accessing', () => {
         for(const posting of res.body) {
             expect(posting.postingInfo.category).to.equal("books");
         }
+    });
+});
+
+describe('Sending invalid parameters', () => {
+    it('POST /login should not login with invalid username/password', async() => {
+        const res = await request.post('/login')
+            .send({"email": "wrong@email.com", "password": "wrong"});
+        expect(res.status).to.equal(401);
+        expect(res.text).to.eql('invalid username or password');
+    });
+    it('GET /users/:userId should not return other users info', async() => {
+        const res = await request.get(`/users/${OTHER_USER_ID}`)
+            .auth(access_token, {type: 'bearer'});
+        expect(res.status).to.equal(401);
+        expect(res.text).to.eql('Unauthorized');
+    });
+    it('POST /users/:userId/posting should not allow create other user posting', async() => {
+        const res = await request.get(`/users/${OTHER_USER_ID}/posting`)
+            .auth(access_token, {type: 'bearer'})
+            .send(tester.get_new_test_posting(0));
+        expect(res.status).to.equal(401);
+        expect(res.text).to.eql('Unauthorized');
+    });
+    it('PATCH /users/:userId should not allow update user info without token', async() => {
+        let res = await request.patch(`/users/${USER_ID}`)
+            .send({ email: "veikko@mail.com" })
+        expect(res.status).to.equal(401);
+        expect(res.text).to.eql('No authorization header');
+    });
+    it('PATCH /users/:userId should not allow update other user info', async() => {
+        let res = await request.patch(`/users/${OTHER_USER_ID}`)
+            .auth(access_token, {type: 'bearer'})
+            .send({ email: "veikko@mail.com" });
+        expect(res.status).to.equal(401);
+        expect(res.text).to.eql('Unauthorized');
+    });
+    it('PATCH /users/:userId/postings/:postingId should not allow user to update non existing posting', async() => {
+        let res = await request.patch(`/users/${USER_ID}/postings/${POSTING_ID + 10}`)
+            .auth(access_token, {type: 'bearer'})
+            .send({ price: 30 })
+        expect(res.status).to.equal(404);
+        expect(res.text).to.eql('posting not found');
+    });
+    it('POST /user should not create new users with invalid params', async() => {
+        const user = tester.get_new_test_user(1);
+        user.email = "not_email";
+        const res = await request.post('/user')
+            .send(user);
+        expect(res.status).to.equal(400);
+        expect(res.text).to.eql('email: must match format "email"');
+    });
+    it('POST /users/:userId/posting should allow user to create postings with invalid params', async() => {
+        const posting = tester.get_new_test_posting(0);
+        delete posting.location;
+        const res = await request.post(`/users/${USER_ID}/posting`)
+            .auth(access_token, {type: 'bearer'})
+            .send(posting)
+        expect(res.status).to.equal(400);
+        expect(res.text).to.eql("must have required property 'location'");
+    });
+    it('DELETE /users/:userId/postings/:postingId should not allow user to delete other user posting', async() => {
+        let res = await request.delete(`/users/${OTHER_USER_ID}/postings/${POSTING_ID}`)
+            .auth(access_token, {type: 'bearer'})
+        expect(res.status).to.equal(401);
+        expect(res.text).to.eql('Unauthorized');
+    });
+});
+
+describe('Resetting Data', () => {
+    it('DELETE /users/:userId/postings/:postingId should allow user to delete posting', async() => {
+        let res = await request.delete(`/users/${USER_ID}/postings/${POSTING_ID}`)
+            .auth(access_token, {type: 'bearer'})
+        expect(res.status).to.equal(200);
+        expect(res.text).to.eql('posting deleted');
+    });
+    it('DELETE /reset should delete all users, postings and posting images', async() => {
+        const res = await request.delete(`/reset`)
+        expect(res.status).to.equal(200);
+        expect(res.text).to.eql('users and postings deleted');
     });
 });

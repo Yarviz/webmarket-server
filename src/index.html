@@ -194,24 +194,126 @@ font-style: italic;
 
   <h3>Table of Contents </h3>
   <div class="method-summary"></div>
-  <h4><a href="#Default">Default</a></h4>
+  <h4><a href="#Delete">Delete</a></h4>
+  <ul>
+  <li><a href="#deleteReset"><code><span class="http-method">delete</span> /reset</code></a></li>
+  <li><a href="#deleteUsersUserIdPostingsPostingId"><code><span class="http-method">delete</span> /users/{userId}/postings/{postingId}</code></a></li>
+  </ul>
+  <h4><a href="#Get">Get</a></h4>
   <ul>
   <li><a href="#getPostings"><code><span class="http-method">get</span> /postings</code></a></li>
+  <li><a href="#getPostingsPostingIdImagesImageId"><code><span class="http-method">get</span> /images/{filename}</code></a></li>
   <li><a href="#getUsersUserId"><code><span class="http-method">get</span> /users/{userId}</code></a></li>
-  <li><a href="#getUsersUserIdPostingsPostingId"><code><span class="http-method">get</span> /users/{userId}/postings/{postingId}</code></a></li>
+  <li><a href="#getUsersUserIdPostings"><code><span class="http-method">get</span> /users/{userId}/posting</code></a></li>
+  </ul>
+  <h4><a href="#Patch">Patch</a></h4>
+  <ul>
   <li><a href="#patchUsersUserId"><code><span class="http-method">patch</span> /users/{userId}</code></a></li>
+  <li><a href="#patchUsersUserIdPostingsPostingId"><code><span class="http-method">patch</span> /users/{userId}/postings/{postingId}</code></a></li>
+  </ul>
+  <h4><a href="#Post">Post</a></h4>
+  <ul>
+  <li><a href="#postLogin"><code><span class="http-method">post</span> /login</code></a></li>
   <li><a href="#postUser"><code><span class="http-method">post</span> /user</code></a></li>
-  <li><a href="#postUsersUserIdPosting"><code><span class="http-method">post</span> /users/{userId}/posting</code></a></li>
+  <li><a href="#postUsersUserIdPostingsPostingId"><code><span class="http-method">post</span> /users/{userId}/posting</code></a></li>
   <li><a href="#postUsersUserIdPostingsPostingIdImage"><code><span class="http-method">post</span> /users/{userId}/postings/{postingId}/image</code></a></li>
   </ul>
 
-  <h1><a name="Default">Default</a></h1>
+  <h1><a name="Delete">Delete</a></h1>
+  <div class="method"><a name="deleteReset"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /reset</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">deleteReset</span>)</div>
+    <div class="method-notes">Reset user and posting data from server</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      String
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#String">String</a>
+    <h4 class="field-label">403</h4>
+    Forbidden
+        <a href="#String">String</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteUsersUserIdPostingsPostingId"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /users/{userId}/postings/{postingId}</code></pre></div>
+    <div class="method-summary">Delete posting from particular user (<span class="nickname">deleteUsersUserIdPostingsPostingId</span>)</div>
+    <div class="method-notes">Delete existing posting from user</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">userId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  default: null </div><div class="param">postingId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  default: null </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      String
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    posting deleted
+        <a href="#String">String</a>
+    <h4 class="field-label">401</h4>
+    Unauthorized
+        <a href="#String">String</a>
+    <h4 class="field-label">404</h4>
+    posting not found
+        <a href="#String">String</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Get">Get</a></h1>
   <div class="method"><a name="getPostings"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /postings</code></pre></div>
     <div class="method-summary">Get Posting with query params (<span class="nickname">getPostings</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-notes">Get postings with particular query parameters</div>
 
 
 
@@ -245,8 +347,9 @@ font-style: italic;
     "name" : "name",
     "email" : "email"
   },
+  "user_id" : 6,
   "imageUrls" : [ "imageUrls", "imageUrls" ],
-  "id" : 0,
+  "_id" : 0,
   "postingInfo" : {
     "price" : 10,
     "deliveryType" : "shipping",
@@ -268,6 +371,51 @@ font-style: italic;
     <h4 class="field-label">200</h4>
     OK
         
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getPostingsPostingIdImagesImageId"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /images/{filename}</code></pre></div>
+    <div class="method-summary">Get Posting image (<span class="nickname">getPostingsPostingIdImagesImageId</span>)</div>
+    <div class="method-notes">Get image from particular posting</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">filename (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  default: null </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      String
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>multipart/form-data</code></li>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#String">String</a>
+    <h4 class="field-label">404</h4>
+    Not Found
+        <a href="#String">String</a>
   </div> <!-- method -->
   <hr/>
   <div class="method"><a name="getUsersUserId"/>
@@ -300,13 +448,12 @@ font-style: italic;
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "emailVerified" : true,
   "contactInfo" : {
     "phone" : "phone",
     "name" : "name",
     "email" : "email"
   },
-  "id" : 0,
+  "_id" : 0,
   "email" : "user1@gmail.com",
   "createDate" : "2000-01-23"
 }</code></pre>
@@ -316,29 +463,31 @@ font-style: italic;
     the media type will be conveyed by the <span class="header">Content-Type</span> response header.
     <ul>
       <li><code>application/json</code></li>
+      <li><code>text/plain</code></li>
     </ul>
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
     User Found
         <a href="#User">User</a>
+    <h4 class="field-label">401</h4>
+    Unauthorized
+        <a href="#String">String</a>
     <h4 class="field-label">404</h4>
     User Not Found
-        <a href="#"></a>
+        <a href="#String">String</a>
   </div> <!-- method -->
   <hr/>
-  <div class="method"><a name="getUsersUserIdPostingsPostingId"/>
+  <div class="method"><a name="getUsersUserIdPostings"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
-    <pre class="get"><code class="huge"><span class="http-method">get</span> /users/{userId}/postings/{postingId}</code></pre></div>
-    <div class="method-summary">Get posting from particular user (<span class="nickname">getUsersUserIdPostingsPostingId</span>)</div>
-    <div class="method-notes">Get posting from particular user with userId and postingId</div>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /users/{userId}/posting</code></pre></div>
+    <div class="method-summary">Get postings from particular user (<span class="nickname">getUsersUserIdPostings</span>)</div>
+    <div class="method-notes">Get postings from particular user with userId and postingId</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
       <div class="param">userId (required)</div>
-
-      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  default: null </div><div class="param">postingId (required)</div>
 
       <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  default: null </div>
     </div>  <!-- field-items -->
@@ -346,11 +495,17 @@ font-style: italic;
 
 
 
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">postingId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  default: null </div>
+    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
     <div class="return-type">
-      <a href="#Posting">Posting</a>
+      array[<a href="#Posting">Posting</a>]
       
     </div>
 
@@ -364,8 +519,9 @@ font-style: italic;
     "name" : "name",
     "email" : "email"
   },
+  "user_id" : 6,
   "imageUrls" : [ "imageUrls", "imageUrls" ],
-  "id" : 0,
+  "_id" : 0,
   "postingInfo" : {
     "price" : 10,
     "deliveryType" : "shipping",
@@ -381,14 +537,19 @@ font-style: italic;
     the media type will be conveyed by the <span class="header">Content-Type</span> response header.
     <ul>
       <li><code>application/json</code></li>
+      <li><code>text/plain</code></li>
     </ul>
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
     OK
-        <a href="#Posting">Posting</a>
+        
+    <h4 class="field-label">401</h4>
+    Unauthorized
+        <a href="#String">String</a>
   </div> <!-- method -->
   <hr/>
+  <h1><a name="Patch">Patch</a></h1>
   <div class="method"><a name="patchUsersUserId"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
@@ -431,15 +592,99 @@ font-style: italic;
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "emailVerified" : true,
   "contactInfo" : {
     "phone" : "phone",
     "name" : "name",
     "email" : "email"
   },
-  "id" : 0,
+  "_id" : 0,
   "email" : "user1@gmail.com",
   "createDate" : "2000-01-23"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    User Updated
+        <a href="#User">User</a>
+    <h4 class="field-label">401</h4>
+    Unauthorized
+        <a href="#String">String</a>
+    <h4 class="field-label">404</h4>
+    User Not Found
+        <a href="#String">String</a>
+    <h4 class="field-label">409</h4>
+    Email Already Taken
+        <a href="#String">String</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="patchUsersUserIdPostingsPostingId"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="patch"><code class="huge"><span class="http-method">patch</span> /users/{userId}/postings/{postingId}</code></pre></div>
+    <div class="method-summary">Update posting from particular user (<span class="nickname">patchUsersUserIdPostingsPostingId</span>)</div>
+    <div class="method-notes">Update existing posting from user</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">userId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  default: null </div><div class="param">postingId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  default: null </div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">PostingInfo <a href="#PostingInfo">PostingInfo</a> (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Posting">Posting</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "contactInfo" : {
+    "phone" : "phone",
+    "name" : "name",
+    "email" : "email"
+  },
+  "user_id" : 6,
+  "imageUrls" : [ "imageUrls", "imageUrls" ],
+  "_id" : 0,
+  "postingInfo" : {
+    "price" : 10,
+    "deliveryType" : "shipping",
+    "description" : "good boog for programmers",
+    "location" : "Oulu",
+    "title" : "c++ book",
+    "category" : "books"
+  }
 }</code></pre>
 
     <h3 class="field-label">Produces</h3>
@@ -451,14 +696,59 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    User Updated
-        <a href="#User">User</a>
+    OK
+        <a href="#Posting">Posting</a>
+    <h4 class="field-label">401</h4>
+    Unauthorized
+        <a href="#String">String</a>
     <h4 class="field-label">404</h4>
-    User Not Found
-        <a href="#"></a>
-    <h4 class="field-label">409</h4>
-    Email Already Taken
-        <a href="#"></a>
+    Not Found
+        <a href="#String">String</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Post">Post</a></h1>
+  <div class="method"><a name="postLogin"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /login</code></pre></div>
+    <div class="method-summary">Login User (<span class="nickname">postLogin</span>)</div>
+    <div class="method-notes">Login user with username and password</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200_1">inline_response_200_1</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "accessToken" : "accessToken"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#inline_response_200_1">inline_response_200_1</a>
+    <h4 class="field-label">401</h4>
+    Unauthorized
+        <a href="#String">String</a>
   </div> <!-- method -->
   <hr/>
   <div class="method"><a name="postUser"/>
@@ -497,13 +787,12 @@ font-style: italic;
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "emailVerified" : true,
   "contactInfo" : {
     "phone" : "phone",
     "name" : "name",
     "email" : "email"
   },
-  "id" : 0,
+  "_id" : 0,
   "email" : "user1@gmail.com",
   "createDate" : "2000-01-23"
 }</code></pre>
@@ -513,6 +802,7 @@ font-style: italic;
     the media type will be conveyed by the <span class="header">Content-Type</span> response header.
     <ul>
       <li><code>application/json</code></li>
+      <li><code>text/plain</code></li>
     </ul>
 
     <h3 class="field-label">Responses</h3>
@@ -521,17 +811,17 @@ font-style: italic;
         <a href="#User">User</a>
     <h4 class="field-label">400</h4>
     Missing Required Information
-        <a href="#"></a>
+        <a href="#String">String</a>
     <h4 class="field-label">409</h4>
     Email Already Taken
-        <a href="#"></a>
+        <a href="#String">String</a>
   </div> <!-- method -->
   <hr/>
-  <div class="method"><a name="postUsersUserIdPosting"/>
+  <div class="method"><a name="postUsersUserIdPostingsPostingId"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /users/{userId}/posting</code></pre></div>
-    <div class="method-summary">Create new posting for user (<span class="nickname">postUsersUserIdPosting</span>)</div>
+    <div class="method-summary">Create new posting for user (<span class="nickname">postUsersUserIdPostingsPostingId</span>)</div>
     <div class="method-notes">Create new posting for user with Id</div>
 
     <h3 class="field-label">Path parameters</h3>
@@ -549,7 +839,7 @@ font-style: italic;
 
     <h3 class="field-label">Request body</h3>
     <div class="field-items">
-      <div class="param">NewPosting <a href="#NewPosting">NewPosting</a> (optional)</div>
+      <div class="param">PostingInfo <a href="#PostingInfo">PostingInfo</a> (optional)</div>
 
       <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
 
@@ -574,8 +864,9 @@ font-style: italic;
     "name" : "name",
     "email" : "email"
   },
+  "user_id" : 6,
   "imageUrls" : [ "imageUrls", "imageUrls" ],
-  "id" : 0,
+  "_id" : 0,
   "postingInfo" : {
     "price" : 10,
     "deliveryType" : "shipping",
@@ -591,15 +882,19 @@ font-style: italic;
     the media type will be conveyed by the <span class="header">Content-Type</span> response header.
     <ul>
       <li><code>application/json</code></li>
+      <li><code>text/plain</code></li>
     </ul>
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    New posting created
+    OK
         <a href="#Posting">Posting</a>
+    <h4 class="field-label">400</h4>
+    Missing Required Information
+        <a href="#String">String</a>
     <h4 class="field-label">401</h4>
     Unauthorized
-        <a href="#"></a>
+        <a href="#String">String</a>
   </div> <!-- method -->
   <hr/>
   <div class="method"><a name="postUsersUserIdPostingsPostingIdImage"/>
@@ -621,23 +916,16 @@ font-style: italic;
     <h3 class="field-label">Consumes</h3>
     This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
     <ul>
-      <li><code>application/octet-stream</code></li>
+      <li><code>multipart/form-data</code></li>
     </ul>
 
-    <h3 class="field-label">Request body</h3>
-    <div class="field-items">
-      <div class="param">body <a href="#object">object</a> (optional)</div>
-
-      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
-
-    </div>  <!-- field-items -->
 
     <h3 class="field-label">Request headers</h3>
     <div class="field-items">
-      <div class="param">Content-Type (optional)</div>
+      <div class="param">Content-Type (required)</div>
 
       <div class="param-desc"><span class="param-type">Header Parameter</span> &mdash; content type of binary data default: null </div>
-<div class="param">Content-Length (optional)</div>
+<div class="param">Content-Length (required)</div>
 
       <div class="param-desc"><span class="param-type">Header Parameter</span> &mdash; content length in bytes default: null </div>
 
@@ -656,7 +944,7 @@ font-style: italic;
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "url" : "url"
+  "filename" : "filename"
 }</code></pre>
 
     <h3 class="field-label">Produces</h3>
@@ -664,18 +952,22 @@ font-style: italic;
     the media type will be conveyed by the <span class="header">Content-Type</span> response header.
     <ul>
       <li><code>application/json</code></li>
+      <li><code>text/plain</code></li>
     </ul>
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
     New image uploaded
         <a href="#inline_response_200">inline_response_200</a>
+    <h4 class="field-label">401</h4>
+    Unauthorized
+        <a href="#String">String</a>
     <h4 class="field-label">404</h4>
     Posting Not Found
-        <a href="#"></a>
+        <a href="#String">String</a>
     <h4 class="field-label">406</h4>
     Maximum number of images exceed
-        <a href="#"></a>
+        <a href="#String">String</a>
   </div> <!-- method -->
   <hr/>
 
@@ -685,12 +977,13 @@ font-style: italic;
   <h3>Table of Contents</h3>
   <ol>
     <li><a href="#Contact"><code>Contact</code> - ContactInfo</a></li>
-    <li><a href="#NewPosting"><code>NewPosting</code> - NewPosting</a></li>
     <li><a href="#NewUser"><code>NewUser</code> - NewUser</a></li>
     <li><a href="#Posting"><code>Posting</code> - Posting</a></li>
+    <li><a href="#PostingInfo"><code>PostingInfo</code> - PostingInfo</a></li>
     <li><a href="#User"><code>User</code> - User</a></li>
     <li><a href="#inline_object"><code>inline_object</code> - </a></li>
     <li><a href="#inline_response_200"><code>inline_response_200</code> - </a></li>
+    <li><a href="#inline_response_200_1"><code>inline_response_200_1</code> - </a></li>
   </ol>
 
   <div class="model">
@@ -703,7 +996,27 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="NewPosting"><code>NewPosting</code> - NewPosting</a> <a class="up" href="#__Models">Up</a></h3>
+    <h3><a name="NewUser"><code>NewUser</code> - NewUser</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>User model for registered users</div>
+    <div class="field-items">
+      <div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
+<div class="param">password </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">contactInfo </div><div class="param-desc"><span class="param-type"><a href="#Contact">Contact</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Posting"><code>Posting</code> - Posting</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">postingInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#PostingInfo">PostingInfo</a></span>  </div>
+<div class="param">contactInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#Contact">Contact</a></span>  </div>
+<div class="param">imageUrls (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+<div class="param">user_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="PostingInfo"><code>PostingInfo</code> - PostingInfo</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
       <div class="param">title </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
@@ -717,31 +1030,11 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="NewUser"><code>NewUser</code> - NewUser</a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'>User model for registered users</div>
-    <div class="field-items">
-      <div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
-<div class="param">password </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">contactInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#Contact">Contact</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
-    <h3><a name="Posting"><code>Posting</code> - Posting</a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
-<div class="param">postingInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#NewPosting">NewPosting</a></span>  </div>
-<div class="param">contactInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#Contact">Contact</a></span>  </div>
-<div class="param">imageUrls (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
     <h3><a name="User"><code>User</code> - User</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>User model for registered users</div>
     <div class="field-items">
-      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Unique identifier for the given user. </div>
+      <div class="param">_id (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Unique identifier for the given user. </div>
 <div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
-<div class="param">emailVerified (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Set to true if the user's email has been verified. </div>
 <div class="param">createDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span> The date that the user was created. format: date</div>
 <div class="param">contactInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#Contact">Contact</a></span>  </div>
     </div>  <!-- field-items -->
@@ -759,7 +1052,14 @@ font-style: italic;
     <h3><a name="inline_response_200"><code>inline_response_200</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">url (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+      <div class="param">filename (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_response_200_1"><code>inline_response_200_1</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">accessToken (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   </body>

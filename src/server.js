@@ -7,11 +7,6 @@ const morgan = require('morgan');
 const multer = require('multer');
 const { authenticateJWT } = require('./authenticator');
 
-//const mongoose = require('mongoose');
-//mongoose.connect("mongodb://localhost/test", () => {
-//    console.log("connected to database");
-//})
-
 const fileFilter = (req, file, cb) => {
     if (['image/png', 'image/jpg', 'image/jpeg'].includes(file.mimetype)) {
         cb (null, true)
@@ -28,13 +23,24 @@ const storage = multer.diskStorage({
       cb(null, Date.now() + "_" + file.originalname)
     }
 })
-const upload = multer({ storage: storage, fileFilter: fileFilter });
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 512*512 }
+});
 const app = express();
 
 if (process.env.NODE_ENV !== "test") {
     app.use(morgan('tiny'));
 }
 app.use(bodyparser.json());
+app.use((err, req, res, next) => {
+    if (err) {
+      res.status(400).send('error when parsing data')
+    } else {
+      next()
+    }
+})
 app.use('/images', express.static('./public'), (req, res) => {
     res.status(404).send("image not found");
 });
@@ -47,8 +53,6 @@ app.get('/users/:userId/posting',
     authenticateJWT, routes.getUserPostings);
 app.get('/postings',
     routes.getPostings);
-//app.get('/postings/:postingId/images/:imageId',
-//    routes.getPostingImage);
 app.post('/login',
     routes.loginUser);
 app.post('/user',

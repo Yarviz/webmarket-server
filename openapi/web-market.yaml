@@ -3,43 +3,16 @@ info:
   description: web market
   title: web market
   version: '1.0'
+  contact:
+    name: web-market
 servers:
   - url: 'http://localhost:3000'
+tags:
+  - name: get
+  - name: post
+  - name: patch
+  - name: delete
 paths:
-  /user:
-    post:
-      summary: Create New User
-      operationId: post-user
-      responses:
-        '200':
-          description: User Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                New User user1@gmail.com:
-                  value:
-                    id: 1
-                    email: user1@gmail.com
-                    emailVerified: false
-                    createDate: '2022-01-01'
-        '400':
-          description: Missing Required Information
-        '409':
-          description: Email Already Taken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewUser'
-            examples:
-              Create User user1@gmail.com:
-                value:
-                  email: user1@gmail.com
-                  password: gw3232423fgggre233
-        description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
   '/users/{userId}':
     parameters:
       - schema:
@@ -50,7 +23,8 @@ paths:
         description: Id of an existing user.
     get:
       summary: Get User Info by User ID
-      tags: []
+      tags:
+        - get
       responses:
         '200':
           description: User Found
@@ -59,11 +33,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
               examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: Unauthorized
         '404':
           description: User Not Found
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: User Not Found
       operationId: get-users-userId
       description: Retrieve the information of the user with the matching user ID.
     patch:
+      tags:
+        - patch
       summary: Update User Information
       operationId: patch-users-userId
       responses:
@@ -76,14 +68,40 @@ paths:
               examples:
                 Updated User user1@gmail.com:
                   value:
-                    id: 1
+                    _id: 1
                     email: user1@gmail.com
-                    emailVerified: false
                     createDate: '2022-01-01'
+                    contactInfo:
+                      name: user1
+                      email: user1@gmail.com
+                      phone: '1234567'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: Unauthorized
         '404':
           description: User Not Found
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: User Not Found
         '409':
           description: Email Already Taken
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: Email Already Taken
       description: Update the information of an existing user.
       requestBody:
         content:
@@ -93,9 +111,7 @@ paths:
               properties:
                 email:
                   type: string
-                  description: >-
-                    If a new email is given, the user's email verified property
-                    will be set to false.
+                  description: 'If a new email is given, the user''s email verified property will be set to false.'
                 password:
                   type: string
                 contactInfo:
@@ -108,31 +124,63 @@ paths:
                 value:
                   password: string
         description: Patch user properties to update.
-  '/users/{userId}/posting':
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
+  /user:
     post:
-      summary: Create new posting for user
-      operationId: post-users-userId-posting
+      tags:
+        - post
+      summary: Create New User
+      operationId: post-user
       responses:
         '200':
-          description: New posting created
+          description: User Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Posting'
-        '401':
-          description: Unauthorized
-      description: Create new posting for user with Id
+                $ref: '#/components/schemas/User'
+              examples:
+                New User user1@gmail.com:
+                  value:
+                    _id: 1
+                    email: user1@gmail.com
+                    createDate: '2022-01-01'
+                    contactInfo:
+                      name: user1
+                      email: user1@gmail.com
+                      phone: '1234567'
+        '400':
+          description: Missing Required Information
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: must have required property 'email'
+        '409':
+          description: Email Already Taken
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: Email Already Taken
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewPosting'
+              $ref: '#/components/schemas/NewUser'
+            examples:
+              Create User user1@gmail.com:
+                value:
+                  email: user1@gmail.com
+                  password: 123123fwefwefgvwe
+                  contactInfo:
+                    name: user
+                    email: usermail.com
+                    phone: '123456'
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new user.
   '/users/{userId}/postings/{postingId}':
     parameters:
       - schema:
@@ -145,9 +193,45 @@ paths:
         name: postingId
         in: path
         required: true
-    get:
-      summary: Get posting from particular user
-      operationId: get-users-userId-postings-postingId
+    delete:
+      tags:
+        - delete
+      summary: Delete posting from particular user
+      operationId: delete-users-userId-postings-postingId
+      responses:
+        '200':
+          description: posting deleted
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: posting deleted
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: Unauthorized
+        '404':
+          description: posting not found
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: posting not found
+      description: Delete existing posting from user
+    patch:
+      tags:
+        - patch
+      summary: Update posting from particular user
+      operationId: patch-users-userId-postings-postingId
       responses:
         '200':
           description: OK
@@ -155,7 +239,103 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Posting'
-      description: Get posting from particular user with userId and postingId
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: posting not found
+      description: Update existing posting from user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostingInfo'
+  '/users/{userId}/posting':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      tags:
+        - get
+      summary: Get postings from particular user
+      operationId: get-users-userId-postings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Posting'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: Unauthorized
+      description: Get postings from particular user with userId and postingId
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: postingId
+    post:
+      tags:
+        - post
+      summary: Create new posting for user
+      operationId: post-users-userId-postings-postingId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Posting'
+        '400':
+          description: Missing Required Information
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: must have required property 'location'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: Unauthorized
+      description: Create new posting for user with Id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostingInfo'
+      parameters: []
   '/users/{userId}/postings/{postingId}/image':
     parameters:
       - schema:
@@ -169,6 +349,8 @@ paths:
         in: path
         required: true
     post:
+      tags:
+        - post
       summary: Upload image for particular posting
       operationId: post-users-userId-postings-postingId-image
       responses:
@@ -179,16 +361,39 @@ paths:
               schema:
                 type: object
                 properties:
-                  url:
+                  filename:
                     type: string
               examples:
                 example url:
                   value:
-                    url: /postings/1/images/1.jpg
+                    filename: testimage.jpg
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: Unauthorized
         '404':
           description: Posting Not Found
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: posting not found
         '406':
           description: Maximum number of images exceed
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: maximum number of images uploaded for posting
       description: Upload new image for user posting with postingId
       parameters:
         - schema:
@@ -196,23 +401,25 @@ paths:
           in: header
           name: Content-Type
           description: content type of binary data
+          required: true
         - schema:
             type: string
           in: header
           name: Content-Length
           description: content length in bytes
+          required: true
       requestBody:
         content:
-          application/octet-stream:
+          multipart/form-data:
             schema:
-              type: object
-            examples:
-              example-1:
-                value: {}
+              type: string
+            examples: {}
+        description: Binary stream for image data
   /postings:
     get:
+      tags:
+        - get
       summary: Get Posting with query params
-      tags: []
       responses:
         '200':
           description: OK
@@ -222,7 +429,24 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Posting'
-              examples: {}
+              examples:
+                example-1:
+                  value:
+                    - _id: 0
+                      postingInfo:
+                        title: c++ book
+                        description: good boog for programmers
+                        category: books
+                        location: Oulu
+                        price: 10
+                        deliveryType: shipping
+                      contactInfo:
+                        name: string
+                        email: string
+                        phone: string
+                      imageUrls:
+                        - string
+                      user_id: 0
       operationId: get-postings
       parameters:
         - schema:
@@ -237,7 +461,100 @@ paths:
             type: string
           in: query
           name: date
+      description: Get postings with particular query parameters
     parameters: []
+  '/images/{filename}':
+    get:
+      summary: Get Posting image
+      tags:
+        - get
+      responses:
+        '200':
+          description: OK
+          content:
+            multipart/form-data:
+              schema:
+                type: string
+              examples: {}
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: image/png
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: image not found
+      operationId: get-postings-postingId-images-imageId
+      parameters: []
+      description: Get image from particular posting
+    parameters:
+      - schema:
+          type: string
+        name: filename
+        in: path
+        required: true
+  /login:
+    post:
+      tags:
+        - post
+      summary: Login User
+      operationId: post-login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+              examples:
+                example-token:
+                  value:
+                    accessToken: wefwegwghk213po13231.1231212r4we.21312312r41
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: invalid username or password
+      description: Login user with username and password
+  /reset:
+    delete:
+      tags:
+        - delete
+      summary: ''
+      operationId: delete-reset
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: users and postings deleted
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: no users or postings
+      description: Reset user and posting data from server
 components:
   schemas:
     User:
@@ -245,16 +562,13 @@ components:
       type: object
       description: User model for registered users
       properties:
-        id:
+        _id:
           type: integer
           description: Unique identifier for the given user.
         email:
           type: string
           format: email
           example: user1@gmail.com
-        emailVerified:
-          type: boolean
-          description: Set to true if the user's email has been verified.
         createDate:
           type: string
           format: date
@@ -277,22 +591,27 @@ components:
       required:
         - email
         - password
+        - contactInfo
+      x-examples: {}
     Posting:
       title: Posting
       type: object
+      description: ''
       properties:
-        id:
+        _id:
           type: integer
         postingInfo:
-          $ref: '#/components/schemas/NewPosting'
+          $ref: '#/components/schemas/PostingInfo'
         contactInfo:
           $ref: '#/components/schemas/Contact'
         imageUrls:
           type: array
           items:
             type: string
-    NewPosting:
-      title: NewPosting
+        user_id:
+          type: integer
+    PostingInfo:
+      title: PostingInfo
       type: object
       description: ''
       properties:
@@ -335,4 +654,9 @@ components:
           type: string
         phone:
           type: string
+      x-examples:
+        example-1:
+          name: string
+          email: string
+          phone: string
   responses: {}

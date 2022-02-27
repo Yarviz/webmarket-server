@@ -16,24 +16,10 @@ const PostingSchema = new mongoose.Schema({
     postingInfo: {
         type: PostingInfoSchema,
         _id: false,
-        default: {
-            title: "book",
-            description: "nice book",
-            category: "books",
-            location: "Oulu",
-            price: 20,
-            deliveryType: "shipping"
-        }
     },
     user_id: Number,
     contactInfo: {
         type: ContactSchema,
-        default: {
-            id_: false,
-            name: "Erkki",
-            email: "erkki2@email.com",
-            phone: "1234567"
-        }
     },
     images: [String]
 });
